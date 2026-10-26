@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nayeem Biology Care - 2nd Batch Tracker</title>
+    <!-- Google Fonts: Bold & Modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.2);
+            --secondary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #090d16;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Live Biological Floating Animation Background */
+        .bio-animation-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-cell {
+            position: absolute;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(59, 130, 246, 0.05) 70%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 50%;
+            animation: floatUp 15s infinite linear;
+        }
+
+        .floating-cell:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-duration: 12s; }
+        .floating-cell:nth-child(2) { width: 120px; height: 120px; left: 75%; animation-duration: 18s; animation-delay: 2s; }
+        .floating-cell:nth-child(3) { width: 50px; height: 50px; left: 45%; animation-duration: 10s; animation-delay: 4s; }
+        .floating-cell:nth-child(4) { width: 100px; height: 100px; left: 30%; animation-duration: 22s; animation-delay: 1s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0.8) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #38bdf8, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .developer-badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #34d399;
+            text-transform: uppercase;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid var(--card-border);
+        }
+
+        .card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-box h3 {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .stat-box .value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #38bdf8;
+            margin-top: 5px;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            height: 14px;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+        }
+
+        .alert-box {
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .alert-warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        form {
+            display: grid;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #cbd5e1;
+        }
+
+        input, select {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: white;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        select option {
+            background: #0f172a;
+            color: white;
+        }
+
+        button {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.04);
+            color: #94a3b8;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.8px;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .report-section {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+            border: 2px solid var(--accent);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 24px;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);
+        }
+
+        .report-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        footer span {
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Live Floating Biological Cell Animation Background -->
+    <div class="bio-animation-bg">
+        <div class="floating-cell"></div>
+        <div class="floating-cell"></div>
+        <div class="floating-cell"></div>
+        <div class="floating-cell"></div>
+    </div>
+
+<div class="container">
+    <header>
+        <h1>Nayeem Biology Care</h1>
+        <p>2nd Batch • Advanced Class & Attendance Tracker</p>
+        <div class="developer-badge">DEVELOPED BY ROWDRO</div>
+    </header>
+
+    <!-- Dashboard Overview & Alert -->
+    <div class="card">
+        <h2>📊 Current Month Progress</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <h3>Target Classes</h3>
+                <div class="value">12</div>
+            </div>
+            <div class="stat-box">
+                <h3>Completed</h3>
+                <div class="value" id="monthlyCompletedCount">0</div>
+            </div>
+            <div class="stat-box">
+                <h3>Missed</h3>
+                <div class="value" id="monthlyMissedCount" style="color: #ef4444;">0</div>
+            </div>
+        </div>
+
+        <!-- Visual Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="targetAlert" class="alert-box alert-warning">
+            Checking status...
+        </div>
+    </div>
+
+    <!-- Entry Form -->
+    <div class="card">
+        <h2>✨ Log Class Entry</h2>
+        <form id="classForm">
+            <div class="form-group">
+                <label for="classDate">Class Date</label>
+                <input type="date" id="classDate" required>
+            </div>
+            <div class="form-group">
+                <label for="classStatus">Class Status</label>
+                <select id="classStatus">
+                    <option value="Completed">Class Held (Completed Successfully)</option>
+                    <option value="Missed">Missed by Teacher / Canceled</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="classNote">Chapter / Topic Note (Optional)</label>
+                <input type="text" id="classNote" placeholder="e.g., Plant Physiology & Tissue Culture">
+            </div>
+            <button type="submit">Save Class Record</button>
+        </form>
+    </div>
+
+    <!-- Custom Date Range Smart Report -->
+    <div class="card">
+        <h2>🔎 Smart Date-Range Report</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 18px;">
+            <div class="form-group">
+                <label for="startDate">From Date</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="form-group">
+                <label for="endDate">To Date</label>
+                <input type="date" id="endDate">
+            </div>
+        </div>
+        <button type="button" id="generateReportBtn" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">Generate Smart Report</button>
+
+        <div id="reportResult" class="report-section" style="display: none;">
+            <div class="report-header-flex">
+                <h3 style="margin: 0; color: #38bdf8; font-family: 'Outfit', sans-serif;">📋 Analysis Report</h3>
+                <span class="badge">Screenshot Ready</span>
+            </div>
+            <p id="reportSummaryText" style="margin-bottom: 15px; font-weight: 600; color: #e2e8f0;"></p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Topic Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Logs History -->
+    <div class="card">
+        <h2>📜 Complete History Log</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Topic Note</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        DEVELOPED BY <span>ROWDRO</span>
+    </footer>
+</div>
+
+<script>
+    const STORAGE_KEY = 'nayeem_biology_2nd_batch_v2';
+    document.getElementById('classDate').valueAsDate = new Date();
+
+    function getClasses() {
+        const data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
+    }
+
+    function saveClasses(classes) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(classes));
+        updateDashboard();
+    }
+
+    document.getElementById('classForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const date = document.getElementById('classDate').value;
+        const status = document.getElementById('classStatus').value;
+        const note = document.getElementById('classNote').value;
+
+        const classes = getClasses();
+        classes.push({ id: Date.now(), date, status, note });
+        classes.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        saveClasses(classes);
+        document.getElementById('classNote').value = '';
+    });
+
+    window.deleteClass = function(id) {
+        if(confirm('Are you sure you want to delete this record?')) {
+            let classes = getClasses();
+            classes = classes.filter(c => c.id !== id);
+            saveClasses(classes);
+        }
+    }
+
+    function updateDashboard() {
+        const classes = getClasses();
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+
+        const currentMonthClasses = classes.filter(c => {
+            const d = new Date(c.date);
+            return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+        });
+
+        const completedCount = currentMonthClasses.filter(c => c.status === 'Completed').length;
+        const missedCount = currentMonthClasses.filter(c => c.status === 'Missed').length;
+
+        document.getElementById('monthlyCompletedCount').innerText = completedCount;
+        document.getElementById('monthlyMissedCount').innerText = missedCount;
+
+        const progressPercentage = Math.min((completedCount / 12) * 100, 100);
+        document.getElementById('progressBar').style.width = progressPercentage + '%';
+
+        const alertBox = document.getElementById('targetAlert');
+        if (completedCount >= 12) {
+            alertBox.className = 'alert-box alert-success';
+            alertBox.innerHTML = `🎉 Amazing! This month's target of 12 classes is fully completed (${completedCount}/12).`;
+        } else {
+            const remaining = 12 - completedCount;
+            alertBox.className = 'alert-box alert-warning';
+            alertBox.innerHTML = `⚠️ Alert: ${completedCount} out of 12 classes completed this month. ${remaining} classes are still pending.`;
+        }
+
+        const historyBody = document.getElementById('historyTableBody');
+        historyBody.innerHTML = '';
+        if (classes.length === 0) {
+            historyBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 25px;">No class records added yet.</td></tr>`;
+        } else {
+            classes.forEach(c => {
+                const tr = document.createElement('tr');
+                const statusBadgeStyle = c.status === 'Completed' ? 'color: #34d399; font-weight:700;' : 'color: #ef4444; font-weight:700;';
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${c.date}</td>
+                    <td><span style="${statusBadgeStyle}">${c.status}</span></td>
+                    <td style="color: #cbd5e1;">${c.note || '-'}</td>
+                    <td><button class="btn-danger" onclick="deleteClass(${c.id})">Delete</button></td>
+                `;
+                historyBody.appendChild(tr);
+            });
+        }
+    }
+
+    document.getElementById('generateReportBtn').addEventListener('click', function() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if(!startDate || !endDate) {
+            alert('Please select both Start Date and End Date.');
+            return;
+        }
+
+        const classes = getClasses();
+        const filtered = classes.filter(c => c.date >= startDate && c.date <= endDate);
+        const completedCount = filtered.filter(c => c.status === 'Completed').length;
+        const missedCount = filtered.filter(c => c.status === 'Missed').length;
+
+        const resultDiv = document.getElementById('reportResult');
+        resultDiv.style.display = 'block';
+        
+        document.getElementById('reportSummaryText').innerHTML = 
+            `Period: <strong>${startDate}</strong> to <strong>${endDate}</strong><br>Total Logged: <strong>${filtered.length}</strong> | Completed: <span style="color:#34d399;">${completedCount}</span> | Missed: <span style="color:#ef4444;">${missedCount}</span>`;
+
+        const reportBody = document.getElementById('reportTableBody');
+        reportBody.innerHTML = '';
+
+        if(filtered.length === 0) {
+            reportBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 20px;">No classes recorded in this date range.</td></tr>`;
+        } else {
+            filtered.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${c.date}</td>
+                    <td style="color: ${c.status === 'Completed' ? '#34d399' : '#ef4444'}; font-weight:600;">${c.status}</td>
+                    <td style="color: #cbd5e1;">${c.note || '-'}</td>
+                `;
+                reportBody.appendChild(tr);
+            });
+        }
+    });
+
+    updateDashboard();
+</script>
+
+</body>
+  </html>
